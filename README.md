@@ -8,6 +8,11 @@
 
 ### `Config`
 
+#### Traits
+
+1. `Debug` and `Default`
+2. From [serde](https://serde.rs/derive.html): `Deserialize` and `Serialize`
+
 Represents the entire configuration, with support for both general (non-sectioned) values and sectioned values.
 
 -   **Fields**:
