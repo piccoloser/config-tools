@@ -4,6 +4,8 @@
 
 `config_tools` is a configuration management library designed for handling hierarchical configurations using sections and key-value pairs. It provides builders to customize and create `Config` objects, macros to simplify the creation of configuration files, and error handling for configuration loading and saving.
 
+`config_tools` is built on top of [rust-ini](https://github.com/zonyitoo/rust-ini) and focuses mostly on convenience.
+
 ## Structs
 
 ### `Config`
