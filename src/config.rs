@@ -37,7 +37,7 @@ impl<'a> ConfigBuilder<'a> {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, serde::Deserialize, serde::Serialize)]
 pub struct Config {
     pub sections: BTreeMap<String, BTreeMap<String, String>>,
     pub general_values: BTreeMap<String, String>,
