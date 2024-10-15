@@ -7,7 +7,7 @@ description = "A simplified set of tools for working with configuration files."
 license = "MIT"
 repository = "https://github.com/piccoloser/config-tools"
 keywords = ["config", "configuration"]
-categories = ["config", "utilities"]
+categories = ["config"]
 
 [dependencies]
 rust-ini = "0.21.1"
