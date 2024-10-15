@@ -1,41 +1,6 @@
-use crate::error::Error;
+use crate::{builder::ConfigBuilder, error::Error};
 use ini::Ini;
 use std::collections::BTreeMap;
-
-pub struct ConfigBuilder<'a> {
-    config: Config,
-    section: Option<&'a str>,
-}
-
-impl<'a> ConfigBuilder<'a> {
-    pub fn general(mut self) -> Self {
-        self.section = None;
-        self
-    }
-
-    pub fn section(mut self, title: &'a str) -> Self {
-        self.section = Some(title);
-        self.config.sections.entry(title.to_string()).or_default();
-        self
-    }
-
-    pub fn set(mut self, key: &str, value: &str) -> Self {
-        if let Some(section) = self.section {
-            self.config
-                .sections
-                .entry(section.to_string())
-                .or_default()
-                .insert(key.to_string(), value.to_string());
-        } else {
-            self.config.general_values.insert(key.to_string(), value.to_string());
-        }
-        self
-    }
-
-    pub fn build(self) -> Config {
-        self.config
-    }
-}
 
 #[derive(Debug, Default, serde::Deserialize, serde::Serialize)]
 pub struct Config {
@@ -44,12 +9,21 @@ pub struct Config {
 }
 
 impl Config {
+    pub fn general(&self) -> &BTreeMap<String, String> {
+        &self.general_values
+    }
+
     pub fn get(&self, section: Option<&str>, key: &str) -> Option<&String> {
         if let Some(section) = section {
             return self.sections.get(section).and_then(|s| s.get(key));
         } else {
             return self.general_values.get(key);
         }
+    }
+
+    pub fn get_as<T>(&self, section: Option<&str>, key: &str) -> Option<T>
+    where T: std::str::FromStr + std::fmt::Debug {
+        self.get(section, key).and_then(|v| v.parse().ok())
     }
 
     pub fn load(filename: &str) -> Result<Self, Error> {
@@ -76,14 +50,21 @@ impl Config {
         Ok(Config { sections, general_values })
     }
 
-    pub fn new<'a>() -> ConfigBuilder<'a> {
+    pub fn load_or_default<F: FnOnce() -> Config>(filename: &str, default: F) -> Self {
+        match Self::load(filename) {
+            Ok(config) => config,
+            Err(_) => default(),
+        }
+    }
+
+    pub fn builder() -> ConfigBuilder {
         ConfigBuilder {
             config: Config::default(),
             section: None,
         }
     }
 
-    pub fn save(&self, filename: &str) -> Result<(), Error> {
+    pub fn save(&self, filename: &str) -> Result<&Self, Error> {
         let mut ini = Ini::new();
 
         let mut section = ini.with_general_section();
@@ -98,14 +79,20 @@ impl Config {
             }
         }
 
-        ini.write_to_file(filename).map_err(Error::ConfigCreation)
+        ini.write_to_file(filename).map_err(Error::ConfigCreation)?;
+        
+        Ok(self)
+    }
+
+    pub fn section(&self, title: &str) -> Option<&BTreeMap<String, String>> {
+        self.sections.get(title)
     }
 
     pub fn sections(&self) -> &BTreeMap<String, BTreeMap<String, String>> {
         &self.sections
     }
 
-    pub fn update(&mut self, section: Option<&str>, key: &str, value: &str) {
+    pub fn update(&mut self, section: Option<&str>, key: &str, value: &str) -> &mut Self {
         if let Some(section) = section {
             self.sections
                 .entry(section.to_string())
@@ -114,5 +101,7 @@ impl Config {
         } else {
             self.general_values.insert(key.to_string(), value.to_string());
         }
+
+        self
     }
 }

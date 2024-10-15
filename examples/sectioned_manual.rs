@@ -1,7 +1,7 @@
 use config_tools::Config;
 
-fn main() -> Result<(), config_tools::Error> {
-    let config = Config::new()
+fn main() {
+    let config = Config::builder()
         .section("Server")
         .set("host", "127.0.0.1")
         .set("port", "8080")
@@ -12,5 +12,9 @@ fn main() -> Result<(), config_tools::Error> {
         .set("console", "true")
         .build();
 
-    config.save("config-sectioned-manual.ini")
+    config
+        .save("sectioned-manual.ini")
+        .expect("Failed to save config.");
+
+    println!("{:#?}", config);
 }

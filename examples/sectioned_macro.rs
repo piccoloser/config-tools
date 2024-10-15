@@ -1,5 +1,5 @@
-fn main() -> Result<(), config_tools::Error> {
-    let mut config = config_tools::sectioned_defaults! {
+fn main() {
+    let config = config_tools::sectioned_defaults! {
         {
             "console" => "true"
         }
@@ -15,7 +15,9 @@ fn main() -> Result<(), config_tools::Error> {
         }
     };
 
-    config.update(Some("Application"), "host", "0.0.0.0");
+    config
+        .save("sectioned-macro.ini")
+        .expect("Failed to save config.");
 
-    config.save("config-sectioned-macro.ini")
+    println!("{:#?}", config);
 }

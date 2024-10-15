@@ -2,7 +2,7 @@ use config_tools::Config;
 
 #[test]
 fn test_config_builder_general() {
-    let config = Config::new().general().set("key1", "value1").build();
+    let config = Config::builder().general().set("key1", "value1").build();
     assert!(
         config.general_values.contains_key("key1"),
         "General values should be stored without a section."
@@ -22,7 +22,7 @@ fn test_config_builder_general() {
 
 #[test]
 fn test_config_builder_sectioned() {
-    let config = Config::new()
+    let config = Config::builder()
         .section("Application")
         .set("host", "localhost")
         .build();
@@ -36,7 +36,7 @@ fn test_config_builder_sectioned() {
 
 #[test]
 fn test_config_builder_update() {
-    let mut config = Config::new()
+    let mut config = Config::builder()
         .section("Application")
         .set("host", "localhost")
         .build();

@@ -23,20 +23,24 @@ Represents the entire configuration, with support for both general (non-sectione
     -   `general_values`: A `BTreeMap<String, String>` that stores key-value pairs not tied to a specific section.
 
 -   **Methods**:
+    -   `general(&self) -> &BTreeMap<String, String>`: Returns a reference to the general section
     -   `get(section: Option<&str>, key: &str) -> Option<&String>`: Retrieves a value from a specific section or from the general section if no section is provided.
+    -   `get_as<T>(&self, section: Option<&str>, key: &str) -> Option<T>`: Retrieve a value from a specific section or from the general section if no section is provided, parsing said value into a given type `T` so long as the type implements `std::str::FromStr` and `std::fmt::Debug`.
     -   `load(filename: &str) -> Result<Self, Error>`: Loads a configuration from an `.ini` file.
-    -   `new() -> ConfigBuilder<'a>`: Starts the creation of a new configuration with a builder.
-    -   `save(&self, filename: &str) -> Result<(), Error>`: Saves the current configuration to an `.ini` file.
+    -   `load_or_default<F: FnOnce() -> Config>(filename: &str, default: F) -> Self`: Loads a configuration from an `.ini` file or creates one based on a given closure that takes no arguments.
+    -   `builder() -> ConfigBuilder<'a>`: Starts the creation of a new configuration with a builder.
+    -   `save(&self, filename: &str) -> Result<&Self, Error>`: Saves the current configuration to an `.ini` file.
+    -   `section() -> Option<BTreeMap<String, String>>`: Retrieves a given section from the configuration or `None`.
     -   `sections() -> &BTreeMap<String, BTreeMap<String, String>>`: Retrieves the section map of the configuration.
-    -   `update(&mut self, section: Option<&str>, key: &str, value: &str)`: Updates or adds a key-value pair to a specific section or general configuration.
+    -   `update(&mut self, section: Option<&str>, key: &str, value: &str) -> &mut Self`: Updates or adds a key-value pair to a specific section or general configuration.
 
-### `ConfigBuilder<'a>`
+### `ConfigBuilder`
 
 A builder pattern for creating and customizing `Config` objects before finalizing them.
 
 -   **Methods**:
     -   `general() -> Self`: Specifies that the builder is targeting the general section (no specific section).
-    -   `section(title: &'a str) -> Self`: Specifies a section to set key-value pairs in.
+    -   `section(title: &str) -> Self`: Specifies a section to set key-value pairs in.
     -   `set(key: &str, value: &str) -> Self`: Sets a key-value pair in the current section or general section.
     -   `build() -> Config`: Finalizes and returns the built `Config` object.
 

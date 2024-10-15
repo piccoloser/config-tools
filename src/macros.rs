@@ -37,7 +37,7 @@ macro_rules! sectioned_defaults {
             $($key:expr => $value:expr),* $(,)?
         }
     )*) => {
-        config_tools::Config::new()
+        config_tools::Config::builder()
         $(.set($general_key, $general_value))*
         $(
             .section($section)
@@ -50,7 +50,7 @@ macro_rules! sectioned_defaults {
             $($key:expr => $value:expr),* $(,)?
         }
     )*) => {
-        config_tools::Config::new()
+        config_tools::Config::builder()
         $(
             .section($section)
             $(.set($key, $value))*
@@ -74,7 +74,7 @@ macro_rules! sectioned_defaults {
 /// ```
 macro_rules! general_defaults {
     ($($key:expr => $value:expr),* $(,)?) => {
-        config_tools::Config::new()
+        config_tools::Config::builder()
             $(.set($key, $value))*
             .build();
     }

@@ -1,3 +1,4 @@
+mod builder;
 mod config;
 mod error;
 mod macros;
