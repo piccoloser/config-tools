@@ -2,7 +2,13 @@
 name = "config-tools"
 version = "0.1.0"
 edition = "2021"
+authors = ["Gray Logan <literal.gray@gmail.com>"]
+description = "A simplified set of tools for working with configuration files."
+license = "MIT"
+repository = "https://github.com/piccoloser/config-tools"
+keywords = ["config", "configuration"]
+categories = ["config", "utilities"]
 
 [dependencies]
 rust-ini = "0.21.1"
-serde = { version = "1.0.210", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
