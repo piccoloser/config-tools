@@ -1,5 +1,5 @@
 use config_tools::{sectioned_defaults, Config};
-use derive_macro::FromSection;
+use config_tools_derive::FromSection;
 
 #[derive(Debug, FromSection, PartialEq)]
 struct ServerSettings {

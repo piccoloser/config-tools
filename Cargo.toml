@@ -10,6 +10,6 @@ keywords = ["config", "configuration"]
 categories = ["config"]
 
 [dependencies]
-derive_macro = { path = "./derive_macro" }
+config_tools_derive = "0.1.0"
 rust-ini = "0.21.1"
 serde = { version = "1.0", features = ["derive"] }
