@@ -4,5 +4,5 @@ mod error;
 mod macros;
 
 pub use config::{Config, Section};
-pub use error::Error;
 pub use config_tools_derive::FromSection;
+pub use error::Error;

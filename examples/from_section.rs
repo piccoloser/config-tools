@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use config_tools::{sectioned_defaults, Config, FromSection, Section};
 
 #[derive(Debug, FromSection)]
@@ -5,6 +6,12 @@ struct ServerSettings {
     address: String,
     port: u16,
     threads: u16,
+}
+
+#[derive(Debug, FromSection)]
+struct LdapSettings {
+    host: String,
+    domain: String,
 }
 
 fn main() {
@@ -19,20 +26,16 @@ fn main() {
                 "port" => "8080",
                 "threads" => "4",
             }
+            ["LDAP"] {
+                "host" => "ldap://localhost:389",
+                "domain" => "example.com",
+            }
         }
     });
 
-    let console = config.get_as::<bool>(None, "console").unwrap();
-    let log_level = config.get(None, "log_level").unwrap();
-
+    let ldap_settings = LdapSettings::from_section(&config.section("LDAP").unwrap()).unwrap();
     let server_settings = ServerSettings::from_section(&config.section("Server").unwrap()).unwrap();
 
-    println!(
-        "General:\n    console={:?}\n    log_level={:?}",
-        console, log_level
-    );
-    println!(
-        "Server:\n    address={:?}\n    port={:?}\n    threads={:?}",
-        server_settings.address, server_settings.port, server_settings.threads
-    );
+    println!("{ldap_settings:#?}");
+    println!("{server_settings:#?}");
 }

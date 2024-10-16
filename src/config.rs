@@ -26,7 +26,9 @@ impl Config {
     }
 
     pub fn get_as<T>(&self, section: Option<&str>, key: &str) -> Option<T>
-    where T: std::str::FromStr + std::fmt::Debug {
+    where
+        T: std::str::FromStr + std::fmt::Debug,
+    {
         self.get(section, key).and_then(|v| v.parse().ok())
     }
 
@@ -43,7 +45,6 @@ impl Config {
                 });
 
                 sections.insert(section.to_string(), section_map);
-
             } else {
                 prop.iter().for_each(|(key, value)| {
                     general_values.insert(key.to_string(), value.to_string());
@@ -51,7 +52,10 @@ impl Config {
             }
         }
 
-        Ok(Config { sections, general_values })
+        Ok(Config {
+            sections,
+            general_values,
+        })
     }
 
     pub fn load_or_default<F: FnOnce() -> Config>(filename: &str, default: F) -> Self {
@@ -84,7 +88,7 @@ impl Config {
         }
 
         ini.write_to_file(filename).map_err(Error::ConfigCreation)?;
-        
+
         Ok(self)
     }
 
@@ -103,7 +107,8 @@ impl Config {
                 .or_default()
                 .insert(key.to_string(), value.to_string());
         } else {
-            self.general_values.insert(key.to_string(), value.to_string());
+            self.general_values
+                .insert(key.to_string(), value.to_string());
         }
 
         self

@@ -25,12 +25,17 @@ fn test_mixed_defaults_macro() {
     );
 
     // General section checks
-    assert_eq!(config.get(None, "general_key1"), Some(&"general_value1".to_string()));
+    assert_eq!(
+        config.get(None, "general_key1"),
+        Some(&"general_value1".to_string())
+    );
 
     // Section checks
-    assert_eq!(config.get(Some("section1"), "section_key1"), Some(&"section_value1".to_string()));
+    assert_eq!(
+        config.get(Some("section1"), "section_key1"),
+        Some(&"section_value1".to_string())
+    );
 }
-
 
 #[test]
 fn test_sectioned_defaults_macro() {
@@ -44,9 +49,18 @@ fn test_sectioned_defaults_macro() {
         }
     );
 
-    assert_eq!(config.get(Some("section1"), "key1"), Some(&"value1".to_string()));
-    assert_eq!(config.get(Some("section1"), "key2"), Some(&"value2".to_string()));
-    assert_eq!(config.get(Some("section2"), "key3"), Some(&"value3".to_string()));
+    assert_eq!(
+        config.get(Some("section1"), "key1"),
+        Some(&"value1".to_string())
+    );
+    assert_eq!(
+        config.get(Some("section1"), "key2"),
+        Some(&"value2".to_string())
+    );
+    assert_eq!(
+        config.get(Some("section2"), "key3"),
+        Some(&"value3".to_string())
+    );
     assert!(config.get(Some("section2"), "key4").is_none());
 }
 
@@ -59,12 +73,17 @@ fn test_sectioned_defaults_macro_with_missing_section_or_key() {
     );
 
     // Missing section
-    assert!(config.get(Some("missing_section"), "key1").is_none(), "Should return None for missing section");
+    assert!(
+        config.get(Some("missing_section"), "key1").is_none(),
+        "Should return None for missing section"
+    );
 
     // Missing key in existing section
-    assert!(config.get(Some("section1"), "missing_key").is_none(), "Should return None for missing key in section");
+    assert!(
+        config.get(Some("section1"), "missing_key").is_none(),
+        "Should return None for missing key in section"
+    );
 }
-
 
 #[test]
 fn test_sectioned_defaults_macro_with_type_parsing() {
@@ -97,6 +116,9 @@ fn test_sectioned_defaults_macro_with_general_section() {
 
     assert_eq!(config.get(None, "key1"), Some(&"value1".to_string()));
     assert_eq!(config.get(None, "key2"), Some(&"value2".to_string()));
-    assert_eq!(config.get(Some("section1"), "key3"), Some(&"value3".to_string()));
+    assert_eq!(
+        config.get(Some("section1"), "key3"),
+        Some(&"value3".to_string())
+    );
     assert!(config.get(Some("section1"), "key4").is_none());
 }

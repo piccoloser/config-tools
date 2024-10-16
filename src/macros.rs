@@ -7,14 +7,14 @@
 /// let server_section = "Server";  // Variables are supported
 /// let default_host = "127.0.0.1"; // across all fields.
 /// let secure = "true";            // Value must be a string!
-/// 
+///
 /// let mut config: Config = sectioned_defaults! {
 /// // Optional general section (no section title)
 /// // must be the first section if included
 /// {
 ///     "console" => "true",
 /// }
-/// 
+///
 /// // Section titles are enclosed in square brackets
 /// [server_section] {
 ///     "host" => default_host,

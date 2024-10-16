@@ -8,10 +8,12 @@ fn main() {
     // let config = Config::load(filename);
 
     // Load and use defaults on failure
-    let config = Config::load_or_default(filename, || sectioned_defaults! {
-        {
-            "host" => "127.0.0.1",
-            "port" => "8080",
+    let config = Config::load_or_default(filename, || {
+        return sectioned_defaults! {
+            {
+                "host" => "127.0.0.1",
+                "port" => "8080",
+            }
         }
     });
 

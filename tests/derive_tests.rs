@@ -1,5 +1,4 @@
-use config_tools::{sectioned_defaults, Config};
-use config_tools_derive::FromSection;
+use config_tools::{sectioned_defaults, Config, FromSection, Section};
 
 #[derive(Debug, FromSection, PartialEq)]
 struct ServerSettings {
@@ -10,28 +9,31 @@ struct ServerSettings {
 
 #[test]
 fn test_incomplete_section_parsing() {
-    let config = Config::load_or_default("nonexistent.ini", || sectioned_defaults! {
-        ["Server"] {
-            "address" => "192.168.1.1",  // Missing `port` and `threads`
+    let config = Config::load_or_default("nonexistent.ini", || {
+        return sectioned_defaults! {
+            ["Server"] {
+                "address" => "192.168.1.1",  // Missing `port` and `threads`
+            }
         }
     });
 
     let server_settings_result = ServerSettings::from_section(&config.section("Server").unwrap());
-    
+
     assert!(
         server_settings_result.is_err(),
         "Parsing an incomplete section should result in an error"
     );
 }
 
-
 #[test]
 fn test_section_parsing_into_struct() {
-    let config = Config::load_or_default("nonexistent.ini", || sectioned_defaults! {
-        ["Server"] {
-            "address" => "192.168.1.1",
-            "port" => "8000",
-            "threads" => "8",
+    let config = Config::load_or_default("nonexistent.ini", || {
+        return sectioned_defaults! {
+            ["Server"] {
+                "address" => "192.168.1.1",
+                "port" => "8000",
+                "threads" => "8",
+            }
         }
     });
 

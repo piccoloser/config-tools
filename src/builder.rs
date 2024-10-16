@@ -29,7 +29,9 @@ impl ConfigBuilder {
                 .or_default()
                 .insert(key.to_string(), value.to_string());
         } else {
-            self.config.general_values.insert(key.to_string(), value.to_string());
+            self.config
+                .general_values
+                .insert(key.to_string(), value.to_string());
         }
 
         self

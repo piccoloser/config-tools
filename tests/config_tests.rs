@@ -53,15 +53,17 @@ fn test_config_builder_update() {
 #[test]
 fn test_default_config_loading() {
     use config_tools::sectioned_defaults;
-    let config = Config::load_or_default("nonexistent.ini", || sectioned_defaults! {
-        {
-            "console" => "true",
-            "log_level" => "info",
-        }
-        ["Server"] {
-            "address" => "127.0.0.1",
-            "port" => "8080",
-            "threads" => "4",
+    let config = Config::load_or_default("nonexistent.ini", || {
+        return sectioned_defaults! {
+            {
+                "console" => "true",
+                "log_level" => "info",
+            }
+            ["Server"] {
+                "address" => "127.0.0.1",
+                "port" => "8080",
+                "threads" => "4",
+            }
         }
     });
 
@@ -81,30 +83,40 @@ fn test_default_config_loading() {
 #[test]
 fn test_default_config_loading_with_missing_keys() {
     use config_tools::sectioned_defaults;
-    let config = Config::load_or_default("nonexistent.ini", || sectioned_defaults! {
-        {
-            "console" => "true",
-            "log_level" => "info",
-        }
-        ["Server"] {
-            "address" => "127.0.0.1",
-            "port" => "8080",
-            "threads" => "4",
+    let config = Config::load_or_default("nonexistent.ini", || {
+        return sectioned_defaults! {
+            {
+                "console" => "true",
+                "log_level" => "info",
+            }
+            ["Server"] {
+                "address" => "127.0.0.1",
+                "port" => "8080",
+                "threads" => "4",
+            }
         }
     });
 
     // Try to access non-existent key
-    assert!(config.get(None, "missing_key").is_none(), "Should return None for missing key");
+    assert!(
+        config.get(None, "missing_key").is_none(),
+        "Should return None for missing key"
+    );
 
     // Try to access non-existent section
-    assert!(config.get(Some("NonExistentSection"), "any_key").is_none(), "Should return None for missing section");
+    assert!(
+        config.get(Some("NonExistentSection"), "any_key").is_none(),
+        "Should return None for missing section"
+    );
 }
-
 
 #[test]
 fn test_get_as_type_mismatch() {
     let config = Config::builder().general().set("key1", "value1").build();
 
     let result = config.get_as::<u16>(None, "key1"); // Attempt to parse a string into u16
-    assert!(result.is_none(), "get_as should return None on type mismatch");
+    assert!(
+        result.is_none(),
+        "get_as should return None on type mismatch"
+    );
 }
