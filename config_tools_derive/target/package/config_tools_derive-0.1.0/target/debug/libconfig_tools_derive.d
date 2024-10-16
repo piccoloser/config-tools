@@ -1,1 +1,0 @@
-/home/gray.logan@msi.local/dev/config-tools/config_tools_derive/target/package/config_tools_derive-0.1.0/target/debug/libconfig_tools_derive.so: /home/gray.logan@msi.local/dev/config-tools/config_tools_derive/target/package/config_tools_derive-0.1.0/src/lib.rs

@@ -13,13 +13,10 @@ use syn::{parse_macro_input, DeriveInput};
 
     Each field in the struct must implement `FromStr`, as the macro will attempt 
     to parse the corresponding string value for each field in the section map.
-    There is no need to import the `Section` trait, as the macro will do so
-    automatically.
 
     # Example
 
     ```rust
-    # use config_tools::Section;
     #[derive(FromSection)]
     struct ServerConfig {
         host: String,
@@ -59,7 +56,6 @@ pub fn from_section_derive(input: TokenStream) -> TokenStream {
     });
 
     let expanded = quote! {
-        use config_tools::Section;
         impl config_tools::Section for #name {
             fn from_section(map: &std::collections::BTreeMap<String, String>) -> Result<Self, config_tools::Error> {
                 Ok(Self {
