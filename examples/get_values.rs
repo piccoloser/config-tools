@@ -1,5 +1,3 @@
-#![allow(unused, dead_code)]
-
 use config_tools::{sectioned_defaults, Config, FromSection};
 
 #[derive(Debug, FromSection)]
@@ -13,7 +11,7 @@ fn main() {
     let config = Config::load_or_default("get-values.ini", || sectioned_defaults! {
         {
             "console" => "true",
-            "logging" => "true",
+            "log_level" => "info",
         }
         ["Server"] {
             "address" => "127.0.0.1",
@@ -22,17 +20,15 @@ fn main() {
         }
     });
 
-    let address = config
-        .get(Some("Server"), "address")
+    let console = config
+        .get_as::<bool>(None, "console")
         .unwrap();
-
-    let port = config
-        .get_as::<u16>(Some("Server"), "port")
+    let log_level = config
+        .get(None, "log_level")
         .unwrap();
-
-    let threads: u16 = config.get_as(Some("Server"), "threads").unwrap();
 
     let server_settings = ServerSettings::from_section(&config.section("Server").unwrap()).unwrap();
 
-    println!("Server Settings: {server_settings:#?}");
+    println!("General:\n    console={:?}\n    log_level={:?}", console, log_level);
+    println!("Server:\n    address={:?}\n    port={:?}\n    threads={:?}", server_settings.address, server_settings.port, server_settings.threads);
 }
