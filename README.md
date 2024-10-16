@@ -23,14 +23,14 @@ Represents the entire configuration, with support for both general (non-sectione
     -   `general_values`: A `BTreeMap<String, String>` that stores key-value pairs not tied to a specific section.
 
 -   **Methods**:
-    -   `general(&self) -> &BTreeMap<String, String>`: Returns a reference to the general section
+    -   `general(&self) -> &BTreeMap<String, String>`: Returns a reference to the general section.
     -   `get(section: Option<&str>, key: &str) -> Option<&String>`: Retrieves a value from a specific section or from the general section if no section is provided.
     -   `get_as<T>(&self, section: Option<&str>, key: &str) -> Option<T>`: Retrieve a value from a specific section or from the general section if no section is provided, parsing said value into a given type `T` so long as the type implements `std::str::FromStr` and `std::fmt::Debug`.
     -   `load(filename: &str) -> Result<Self, Error>`: Loads a configuration from an `.ini` file.
     -   `load_or_default<F: FnOnce() -> Config>(filename: &str, default: F) -> Self`: Loads a configuration from an `.ini` file or creates one based on a given closure that takes no arguments.
-    -   `builder() -> ConfigBuilder<'a>`: Starts the creation of a new configuration with a builder.
+    -   `builder() -> ConfigBuilder`: Starts the creation of a new configuration with a builder.
     -   `save(&self, filename: &str) -> Result<&Self, Error>`: Saves the current configuration to an `.ini` file.
-    -   `section() -> Option<BTreeMap<String, String>>`: Retrieves a given section from the configuration or `None`.
+    -   `section(title: &str) -> Option<&BTreeMap<String, String>>`: Retrieves a given section from the configuration or `None`.
     -   `sections() -> &BTreeMap<String, BTreeMap<String, String>>`: Retrieves the section map of the configuration.
     -   `update(&mut self, section: Option<&str>, key: &str, value: &str) -> &mut Self`: Updates or adds a key-value pair to a specific section or general configuration.
 
@@ -58,6 +58,7 @@ Defines the possible errors that can occur during the use of the crate.
     -   `NotFound`: Returned when a key is not found in the configuration.
     -   `ConfigLoad(ini::Error)`: Error variant for failures during loading of `.ini` files.
     -   `ConfigCreation(std::io::Error)`: Error variant for issues during the saving of `.ini` files.
+    -   `ConfigParse(String)`: Error variant for issues encountered during parsing of configuration values.
 
 -   **Trait Implementation**:
     -   `fmt::Display`: Custom error message formatting for each error variant.
@@ -109,6 +110,27 @@ Generates a `Config` object with default values in a general section.
 
 ---
 
+## Procedural Macros
+
+### `FromSection`
+
+This procedural macro derives an implementation of the `Section` trait for a struct, enabling automatic parsing from a `BTreeMap<String, String>`.
+
+-   **Syntax**:
+
+    ```rust
+    #[derive(FromSection)]
+    struct ServerConfig {
+        host: String,
+        port: u16,
+    }
+    ```
+
+-   **Notes**:
+    -   The fields of the struct must implement `FromStr`, and the macro will automatically attempt to parse each field from the corresponding string value in the section.
+
+---
+
 # Usage Examples
 
 ## Manually Creating a New Configuration
@@ -116,7 +138,7 @@ Generates a `Config` object with default values in a general section.
 ```rust
 use config_tools::Config;
 
-let config = Config::new()
+let config = Config::builder()
     .general()
     .set("logging", "true")
     .set("verbose", "false")
@@ -142,6 +164,24 @@ let general_config: Config = general_defaults! {
     "console" => "true",
     "logging" => "true",
 };
+```
+
+## Parsing Sections into Structs with `FromSection`
+
+```rust
+use config_tools::{Config, ServerConfig};
+
+#[derive(FromSection)]
+struct ServerConfig {
+    host: String,
+    port: u16,
+}
+
+let config = Config::load("config.ini")?;
+let server_section = config.section("Server").unwrap();
+let server_config = ServerConfig::from_section(server_section)?;
+
+println!("{:?}", server_config);
 ```
 
 ## Updating a Configuration

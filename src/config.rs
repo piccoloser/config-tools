@@ -2,6 +2,10 @@ use crate::{builder::ConfigBuilder, error::Error};
 use ini::Ini;
 use std::collections::BTreeMap;
 
+pub trait Section: Sized {
+    fn from_section(map: &BTreeMap<String, String>) -> Result<Self, Error>;
+}
+
 #[derive(Debug, Default, serde::Deserialize, serde::Serialize)]
 pub struct Config {
     pub sections: BTreeMap<String, BTreeMap<String, String>>,
