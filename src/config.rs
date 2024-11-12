@@ -6,7 +6,7 @@ pub trait Section: Sized {
     fn from_section(map: &BTreeMap<String, String>) -> Result<Self, Error>;
 }
 
-#[derive(Debug, Default, serde::Deserialize, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
 pub struct Config {
     pub sections: BTreeMap<String, BTreeMap<String, String>>,
     pub general_values: BTreeMap<String, String>,
