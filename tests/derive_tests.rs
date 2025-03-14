@@ -9,13 +9,14 @@ struct ServerSettings {
 
 #[test]
 fn test_incomplete_section_parsing() {
-    let config = Config::load_or_default("nonexistent.ini", || {
-        return sectioned_defaults! {
-            ["Server"] {
-                "address" => "192.168.1.1",  // Missing `port` and `threads`
-            }
-        }
-    });
+    let config = Config::load_or_default(
+        "nonexistent.ini",
+        sectioned_defaults! {
+                ["Server"] {
+                    "address" => "192.168.1.1",  // Missing `port` and `threads`
+                }
+        },
+    );
 
     let server_settings_result = ServerSettings::from_section(&config.section("Server").unwrap());
 
@@ -27,15 +28,16 @@ fn test_incomplete_section_parsing() {
 
 #[test]
 fn test_section_parsing_into_struct() {
-    let config = Config::load_or_default("nonexistent.ini", || {
-        return sectioned_defaults! {
-            ["Server"] {
-                "address" => "192.168.1.1",
-                "port" => "8000",
-                "threads" => "8",
-            }
-        }
-    });
+    let config = Config::load_or_default(
+        "nonexistent.ini",
+        sectioned_defaults! {
+                ["Server"] {
+                    "address" => "192.168.1.1",
+                    "port" => "8000",
+                    "threads" => "8",
+                }
+        },
+    );
 
     // Parse section into a struct
     let server_settings = ServerSettings::from_section(&config.section("Server").unwrap()).unwrap();

@@ -15,23 +15,24 @@ struct LdapSettings {
 }
 
 fn main() {
-    let config = Config::load_or_default("get-values.ini", || {
-        return sectioned_defaults! {
-            {
-                "console" => "true",
-                "log_level" => "info",
-            }
-            ["Server"] {
-                "address" => "127.0.0.1",
-                "port" => "8080",
-                "threads" => "4",
-            }
-            ["LDAP"] {
-                "host" => "ldap://localhost:389",
-                "domain" => "example.com",
-            }
-        }
-    });
+    let config = Config::load_or_default(
+        "get-values.ini",
+        sectioned_defaults! {
+                {
+                    "console" => "true",
+                    "log_level" => "info",
+                }
+                ["Server"] {
+                    "address" => "127.0.0.1",
+                    "port" => "8080",
+                    "threads" => "4",
+                }
+                ["LDAP"] {
+                    "host" => "ldap://localhost:389",
+                    "domain" => "example.com",
+                }
+        },
+    );
 
     let ldap_settings = LdapSettings::from_section(&config.section("LDAP").unwrap()).unwrap();
     let server_settings = ServerSettings::from_section(&config.section("Server").unwrap()).unwrap();

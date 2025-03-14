@@ -8,19 +8,20 @@ struct ServerSettings {
 }
 
 fn main() {
-    let config = Config::load_or_default("get-values.ini", || {
-        return sectioned_defaults! {
-            {
-                "console" => "true",
-                "log_level" => "info",
-            }
-            ["Server"] {
-                "address" => "127.0.0.1",
-                "port" => "8080",
-                "threads" => "4",
-            }
-        }
-    });
+    let config = Config::load_or_default(
+        "get-values.ini",
+        sectioned_defaults! {
+                {
+                    "console" => "true",
+                    "log_level" => "info",
+                }
+                ["Server"] {
+                    "address" => "127.0.0.1",
+                    "port" => "8080",
+                    "threads" => "4",
+                }
+        },
+    );
 
     let console = config.get_as::<bool>(None, "console").unwrap();
     let log_level = config.get(None, "log_level").unwrap();
