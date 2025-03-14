@@ -1,8 +1,6 @@
 fn main() {
     let config = config_tools::sectioned_defaults! {
-        {
-            "console" => "true"
-        }
+        { "console" => "true" }
 
         ["Application"] {
             "host" => "127.0.0.1",

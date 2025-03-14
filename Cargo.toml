@@ -1,6 +1,6 @@
 [package]
 name = "config-tools"
-version = "0.3.3"
+version = "0.3.4"
 edition = "2021"
 authors = ["Gray Logan <literal.gray@gmail.com>"]
 description = "A simplified set of tools for working with configuration files."
