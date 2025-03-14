@@ -53,19 +53,20 @@ fn test_config_builder_update() {
 #[test]
 fn test_default_config_loading() {
     use config_tools::sectioned_defaults;
-    let config = Config::load_or_default("nonexistent.ini", || {
-        return sectioned_defaults! {
-            {
-                "console" => "true",
-                "log_level" => "info",
-            }
-            ["Server"] {
-                "address" => "127.0.0.1",
-                "port" => "8080",
-                "threads" => "4",
-            }
-        }
-    });
+    let config = Config::load_or_default(
+        "nonexistent.ini",
+        sectioned_defaults! {
+                {
+                    "console" => "true",
+                    "log_level" => "info",
+                }
+                ["Server"] {
+                    "address" => "127.0.0.1",
+                    "port" => "8080",
+                    "threads" => "4",
+                }
+        },
+    );
 
     let console = config.get_as::<bool>(None, "console").unwrap();
     let log_level = config.get(None, "log_level").unwrap();
@@ -83,19 +84,20 @@ fn test_default_config_loading() {
 #[test]
 fn test_default_config_loading_with_missing_keys() {
     use config_tools::sectioned_defaults;
-    let config = Config::load_or_default("nonexistent.ini", || {
-        return sectioned_defaults! {
-            {
-                "console" => "true",
-                "log_level" => "info",
-            }
-            ["Server"] {
-                "address" => "127.0.0.1",
-                "port" => "8080",
-                "threads" => "4",
-            }
-        }
-    });
+    let config = Config::load_or_default(
+        "nonexistent.ini",
+        sectioned_defaults! {
+                {
+                    "console" => "true",
+                    "log_level" => "info",
+                }
+                ["Server"] {
+                    "address" => "127.0.0.1",
+                    "port" => "8080",
+                    "threads" => "4",
+                }
+        },
+    );
 
     // Try to access non-existent key
     assert!(

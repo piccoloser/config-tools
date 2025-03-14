@@ -58,10 +58,10 @@ impl Config {
         })
     }
 
-    pub fn load_or_default<F: FnOnce() -> Config>(filename: &str, default: F) -> Self {
+    pub fn load_or_default(filename: &str, default: Config) -> Self {
         match Self::load(filename) {
             Ok(config) => config,
-            Err(_) => default(),
+            Err(_) => default,
         }
     }
 
