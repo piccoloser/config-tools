@@ -29,7 +29,7 @@ fn test_config_builder_sectioned() {
 
     assert_eq!(
         config.get(Some("Application"), "host"),
-        Some(&"localhost".to_string()),
+        Some("localhost".to_string()),
         "Host should equal 'localhost'"
     );
 }
@@ -45,7 +45,7 @@ fn test_config_builder_update() {
 
     assert_eq!(
         config.get(Some("Application"), "host"),
-        Some(&"0.0.0.0".to_string()),
+        Some("0.0.0.0".to_string()),
         "Host should now equal '0.0.0.0'"
     );
 }

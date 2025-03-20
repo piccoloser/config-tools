@@ -17,11 +17,11 @@ impl Config {
         &self.general_values
     }
 
-    pub fn get(&self, section: Option<&str>, key: &str) -> Option<&String> {
+    pub fn get(&self, section: Option<&str>, key: &str) -> Option<String> {
         if let Some(section) = section {
-            return self.sections.get(section).and_then(|s| s.get(key));
+            return self.sections.get(section).and_then(|s| s.get(key)).cloned();
         } else {
-            return self.general_values.get(key);
+            return self.general_values.get(key).cloned();
         }
     }
 

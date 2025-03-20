@@ -8,8 +8,8 @@ fn test_general_defaults_macro() {
         "key2" => "value2",
     );
 
-    assert_eq!(config.get(None, "key1"), Some(&"value1".to_string()));
-    assert_eq!(config.get(None, "key2"), Some(&"value2".to_string()));
+    assert_eq!(config.get(None, "key1"), Some("value1".to_string()));
+    assert_eq!(config.get(None, "key2"), Some("value2".to_string()));
     assert!(config.get(None, "key3").is_none());
 }
 
@@ -27,13 +27,13 @@ fn test_mixed_defaults_macro() {
     // General section checks
     assert_eq!(
         config.get(None, "general_key1"),
-        Some(&"general_value1".to_string())
+        Some("general_value1".to_string())
     );
 
     // Section checks
     assert_eq!(
         config.get(Some("section1"), "section_key1"),
-        Some(&"section_value1".to_string())
+        Some("section_value1".to_string())
     );
 }
 
@@ -51,15 +51,15 @@ fn test_sectioned_defaults_macro() {
 
     assert_eq!(
         config.get(Some("section1"), "key1"),
-        Some(&"value1".to_string())
+        Some("value1".to_string())
     );
     assert_eq!(
         config.get(Some("section1"), "key2"),
-        Some(&"value2".to_string())
+        Some("value2".to_string())
     );
     assert_eq!(
         config.get(Some("section2"), "key3"),
-        Some(&"value3".to_string())
+        Some("value3".to_string())
     );
     assert!(config.get(Some("section2"), "key4").is_none());
 }
@@ -114,11 +114,11 @@ fn test_sectioned_defaults_macro_with_general_section() {
         }
     );
 
-    assert_eq!(config.get(None, "key1"), Some(&"value1".to_string()));
-    assert_eq!(config.get(None, "key2"), Some(&"value2".to_string()));
+    assert_eq!(config.get(None, "key1"), Some("value1".to_string()));
+    assert_eq!(config.get(None, "key2"), Some("value2".to_string()));
     assert_eq!(
         config.get(Some("section1"), "key3"),
-        Some(&"value3".to_string())
+        Some("value3".to_string())
     );
     assert!(config.get(Some("section1"), "key4").is_none());
 }

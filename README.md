@@ -129,7 +129,7 @@ Represents the entire configuration, with support for both general (non-sectione
 
 -   **Methods**:
     -   `general(&self) -> &BTreeMap<String, String>`: Returns a reference to the general section.
-    -   `get(section: Option<&str>, key: &str) -> Option<&String>`: Retrieves a value from a specific section or from the general section if no section is provided.
+    -   `get(section: Option<&str>, key: &str) -> Option<String>`: Retrieves a value from a specific section or from the general section if no section is provided.
     -   `get_as<T>(&self, section: Option<&str>, key: &str) -> Option<T>`: Retrieve a value from a specific section or from the general section if no section is provided, parsing said value into a given type `T` so long as the type implements `std::str::FromStr` and `std::fmt::Debug`.
     -   `load(filename: &str) -> Result<Self, Error>`: Loads a configuration from an `.ini` file.
     -   `load_or_default(filename: &str, default: Config) -> Self`: Loads a configuration from an `.ini` file or uses a provided default.
