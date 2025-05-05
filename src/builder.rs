@@ -1,5 +1,9 @@
 use crate::Config;
 
+/// A builder for incrementally constructing a [`Config`] object.
+///
+/// Supports fluent-style API for setting values in the general section or
+/// named sections. To finalize the configuration, call [`ConfigBuilder::build`].
 pub struct ConfigBuilder {
     pub(crate) config: Config,
     pub(crate) section: Option<String>,

@@ -1,12 +1,18 @@
-use crate::{builder::ConfigBuilder, error::Error};
+use crate::{builder::ConfigBuilder, error::Error, outcome::LoadOutcome};
 use ini::Ini;
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, path::Path};
 
 pub trait Section: Sized {
     fn from_section(map: &BTreeMap<String, String>) -> Result<Self, Error>;
 }
 
-#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+/// Represents an INI-style configuration, including both general
+/// values (not tied to any section) and sectioned key-value pairs.
+///
+/// You can build a `Config` manually using the [`ConfigBuilder`] API,
+/// load one from a file, or create defaults using macros like
+/// [`crate::sectioned_defaults!`] and [`crate::general_defaults!`].
+#[derive(Clone, Debug, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Config {
     pub sections: BTreeMap<String, BTreeMap<String, String>>,
     pub general_values: BTreeMap<String, String>,
@@ -32,8 +38,8 @@ impl Config {
         self.get(section, key).and_then(|v| v.parse().ok())
     }
 
-    pub fn load(filename: &str) -> Result<Self, Error> {
-        let ini = Ini::load_from_file(filename).map_err(Error::ConfigLoad)?;
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, Error> {
+        let ini = Ini::load_from_file(path).map_err(Error::ConfigLoad)?;
         let mut sections = BTreeMap::new();
         let mut general_values = BTreeMap::new();
 
@@ -58,10 +64,17 @@ impl Config {
         })
     }
 
-    pub fn load_or_default(filename: &str, default: Config) -> Self {
-        match Self::load(filename) {
+    pub fn load_or_default<P: AsRef<Path>>(path: P, default: Config) -> Self {
+        match Self::load(path) {
             Ok(config) => config,
             Err(_) => default,
+        }
+    }
+
+    pub fn load_or_default_outcome<P: AsRef<Path>>(path: P, default: Config) -> LoadOutcome {
+        match Self::load(path) {
+            Ok(config) => LoadOutcome::FromFile(config),
+            Err(_) => LoadOutcome::FromDefault(default),
         }
     }
 
@@ -72,7 +85,7 @@ impl Config {
         }
     }
 
-    pub fn save(&self, filename: &str) -> Result<&Self, Error> {
+    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<&Self, Error> {
         let mut ini = Ini::new();
 
         let mut section = ini.with_general_section();
@@ -87,7 +100,7 @@ impl Config {
             }
         }
 
-        ini.write_to_file(filename).map_err(Error::ConfigCreation)?;
+        ini.write_to_file(path).map_err(Error::ConfigCreation)?;
 
         Ok(self)
     }

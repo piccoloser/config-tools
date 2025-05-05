@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 use config_tools::{sectioned_defaults, Config, FromSection, Section};
+use tempfile::NamedTempFile;
 
 #[derive(Debug, FromSection)]
 struct ServerSettings {
@@ -16,7 +17,7 @@ struct LdapSettings {
 
 fn main() {
     let config = Config::load_or_default(
-        "get-values.ini",
+        NamedTempFile::new().unwrap().path(),
         sectioned_defaults! {
                 {
                     "console" => "true",
