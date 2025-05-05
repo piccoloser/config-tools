@@ -1,4 +1,5 @@
 use config_tools::Config;
+use tempfile::NamedTempFile;
 
 #[test]
 fn test_config_builder_general() {
@@ -49,6 +50,32 @@ fn test_config_builder_update() {
         "Host should now equal '0.0.0.0'"
     );
 }
+
+#[test]
+fn test_config_equality() {
+    let config1 = Config::default();
+    let config2 = Config::builder().build();
+
+    assert_eq!(config1, config2);
+}
+
+
+#[test]
+fn test_config_save_and_load_roundtrip() {
+    let config = Config::builder()
+        .section("App")
+        .set("theme", "dark")
+        .general()
+        .set("debug", "true")
+        .build();
+
+    let tmp = NamedTempFile::new().expect("Failed to create temporary file.");
+    config.save(tmp.path().to_str().unwrap()).unwrap();
+
+    let loaded = Config::load(tmp.path().to_str().unwrap()).unwrap();
+    assert_eq!(config, loaded, "Saved and loaded configs should match");
+}
+
 
 #[test]
 fn test_default_config_loading() {
@@ -121,4 +148,22 @@ fn test_get_as_type_mismatch() {
         result.is_none(),
         "get_as should return None on type mismatch"
     );
+}
+
+#[test]
+fn test_get_as_success() {
+    let config = Config::builder()
+        .section("Types")
+        .set("port", "8080")
+        .set("enabled", "true")
+        .set("pi", "3.14")
+        .build();
+
+    let port: u16 = config.get_as(Some("Types"), "port").unwrap();
+    let enabled: bool = config.get_as(Some("Types"), "enabled").unwrap();
+    let pi: f32 = config.get_as(Some("Types"), "pi").unwrap();
+
+    assert_eq!(port, 8080);
+    assert_eq!(enabled, true);
+    assert!((pi - 3.14).abs() < f32::EPSILON);
 }

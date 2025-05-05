@@ -29,11 +29,11 @@ fn main() {
     let server_settings = ServerSettings::from_section(&config.section("Server").unwrap()).unwrap();
 
     println!(
-        "General:\n    console={:?}\n    log_level={:?}",
+        "General:\n\tconsole={:?}\n\tlog_level={:?}",
         console, log_level
     );
     println!(
-        "Server:\n    address={:?}\n    port={:?}\n    threads={:?}",
+        "Server:\n\taddress={:?}\n\tport={:?}\n\tthreads={:?}",
         server_settings.address, server_settings.port, server_settings.threads
     );
 }

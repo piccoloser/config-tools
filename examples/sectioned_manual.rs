@@ -1,4 +1,5 @@
 use config_tools::Config;
+use tempfile::NamedTempFile;
 
 fn main() {
     let config = Config::builder()
@@ -12,8 +13,9 @@ fn main() {
         .set("console", "true")
         .build();
 
+    let tmp = NamedTempFile::new().unwrap();
     config
-        .save("sectioned-manual.ini")
+        .save(tmp.path())
         .expect("Failed to save config.");
 
     println!("{:#?}", config);

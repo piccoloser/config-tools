@@ -1,3 +1,5 @@
+use tempfile::NamedTempFile;
+
 fn main() {
     let config = config_tools::sectioned_defaults! {
         { "console" => "true" }
@@ -13,8 +15,9 @@ fn main() {
         }
     };
 
+    let tmp = NamedTempFile::new().unwrap();
     config
-        .save("sectioned-macro.ini")
+        .save(tmp.path())
         .expect("Failed to save config.");
 
     println!("{:#?}", config);
